@@ -490,7 +490,9 @@ func (n *ctype) setElements(elems int) *ctype {
 	m.dds = append([]*DirectDeclarator(nil), n.dds...)
 	for i, dd := range m.dds {
 		switch dd.Case {
-		case 0: // IDENTIFIER
+		case
+			0, // IDENTIFIER
+			1: //  '(' Declarator ')'
 			// nop
 		case 2: // DirectDeclarator '[' TypeQualifierListOpt ExpressionOpt ']'
 			dd := dd.clone()
@@ -841,7 +843,6 @@ func (n *ctype) Kind() Kind {
 	for {
 		switch dd := n.dds[i]; dd.Case {
 		case 1: // '(' Declarator ')'
-			dd = dd.Declarator.DirectDeclarator
 			i++
 		case 2: // DirectDeclarator '[' TypeQualifierListOpt ExpressionOpt ']'
 			if dd.elements < 0 {

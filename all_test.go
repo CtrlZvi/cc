@@ -2471,3 +2471,9 @@ func TestIssue50(t *testing.T) {
 		t.Fatal("unexpected success")
 	}
 }
+
+func TestIssue51(t *testing.T) {
+	if _, err := Parse("", []string{"testdata/issue51.h"}, newTestModel()); err != nil {
+		t.Fatal(err)
+	}
+}
