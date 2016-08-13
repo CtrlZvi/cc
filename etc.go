@@ -840,7 +840,9 @@ func (n *ctype) Kind() Kind {
 	i := 1
 	for {
 		switch dd := n.dds[i]; dd.Case {
-		//TODO case 1: // '(' Declarator ')'
+		case 1: // '(' Declarator ')'
+			dd = dd.Declarator.DirectDeclarator
+			i++
 		case 2: // DirectDeclarator '[' TypeQualifierListOpt ExpressionOpt ']'
 			if dd.elements < 0 {
 				return Ptr
