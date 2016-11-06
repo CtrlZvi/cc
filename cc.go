@@ -101,7 +101,15 @@ func HostCppConfig(cpp string, opts ...string) (predefined string, includePaths,
 		return "", nil, nil, err
 	}
 
-	a := strings.Split(string(out), "\n")
+	if includePaths, sysIncludePaths, err = hostCppConfig(cpp, string(out)); err != nil {
+		return "", nil, nil, err
+	}
+
+	return string(pre), includePaths, sysIncludePaths, nil
+}
+
+func hostCppConfig(cpp, s string) (includePaths, sysIncludePaths []string, err error) {
+	a := strings.Split(s, "\n")
 	for i := 0; i < len(a); {
 		switch a[i] {
 		case "#include \"...\" search starts here:":
@@ -119,7 +127,7 @@ func HostCppConfig(cpp string, opts ...string) (predefined string, includePaths,
 			for i = i + 1; i < len(a); {
 				switch v := a[i]; {
 				case strings.HasPrefix(v, "#") || v == "End of search list.":
-					return string(pre), includePaths, sysIncludePaths, nil
+					return includePaths, sysIncludePaths, nil
 				default:
 					sysIncludePaths = append(sysIncludePaths, strings.TrimSpace(v))
 					i++
@@ -129,7 +137,7 @@ func HostCppConfig(cpp string, opts ...string) (predefined string, includePaths,
 			i++
 		}
 	}
-	return "", nil, nil, fmt.Errorf("failed parsing %s -v output", cpp)
+	return nil, nil, fmt.Errorf("failed parsing %s -v output", cpp)
 }
 
 type tweaks struct {

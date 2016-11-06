@@ -2560,3 +2560,39 @@ func TestIssue57(t *testing.T) {
 		t.Fatal(string(xc.Dict.S(g)), string(xc.Dict.S(e))) // bool_func, how to get bool_t?
 	}
 }
+
+// https://github.com/cznic/cc/pull/60#issuecomment-258692165
+func TestIssue60(t *testing.T) {
+	const out = `Using built-in specs.
+COLLECT_GCC=cpp
+Target: i686-pc-cygwin
+Configured with: /cygdrive/i/szsz/tmpp/gcc/gcc-4.9.2-3.i686/src/gcc-4.9.2/configure --srcdir=/cygdrive/i/szsz/tmpp/gcc/gcc-4.9.2-3.i686/src/gcc-4.9.2 --prefix=/usr --exec-prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --libexecdir=/usr/libexec --datadir=/usr/share --localstatedir=/var --sysconfdir=/etc --libdir=/usr/lib --datarootdir=/usr/share --docdir=/usr/share/doc/gcc --htmldir=/usr/share/doc/gcc/html -C --build=i686-pc-cygwin --host=i686-pc-cygwin --target=i686-pc-cygwin --without-libiconv-prefix --without-libintl-prefix --libexecdir=/usr/lib --enable-shared --enable-shared-libgcc --enable-static --enable-version-specific-runtime-libs --enable-bootstrap --enable-__cxa_atexit --with-dwarf2 --with-arch=i686 --with-tune=generic --disable-sjlj-exceptions --enable-languages=ada,c,c++,fortran,java,lto,objc,obj-c++ --enable-graphite --enable-threads=posix --enable-libatomic --enable-libgomp --disable-libitm --enable-libquadmath --enable-libquadmath-support --enable-libssp --enable-libada --enable-libjava --enable-libgcj-sublibs --disable-java-awt --disable-symvers --with-ecj-jar=/usr/share/java/ecj.jar --with-gnu-ld --with-gnu-as --with-cloog-include=/usr/include/cloog-isl --without-libiconv-prefix --without-libintl-prefix --with-system-zlib --enable-linker-build-id
+Thread model: posix
+gcc version 4.9.2 (GCC)
+COLLECT_GCC_OPTIONS='-E' '-v' '-mtune=generic' '-march=i686'
+ /usr/lib/gcc/i686-pc-cygwin/4.9.2/cc1.exe -E -quiet -v -Dunix -idirafter /usr/lib/gcc/i686-pc-cygwin/4.9.2/../../../../include/w32api -idirafter /usr/lib/gcc/i686-pc-cygwin/4.9.2/../../../../i686-pc-cygwin/lib/../../include/w32api /dev/null -mtune=generic -march=i686
+ignoring nonexistent directory "/usr/local/include"
+ignoring nonexistent directory "/usr/lib/gcc/i686-pc-cygwin/4.9.2/../../../../i686-pc-cygwin/include"
+ignoring duplicate directory "/usr/lib/gcc/i686-pc-cygwin/4.9.2/../../../../i686-pc-cygwin/lib/../../include/w32api"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/lib/gcc/i686-pc-cygwin/4.9.2/include
+ /usr/lib/gcc/i686-pc-cygwin/4.9.2/include-fixed
+ /usr/include
+ /usr/lib/gcc/i686-pc-cygwin/4.9.2/../../../../include/w32api
+End of search list.
+# 1 "/dev/null"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "/dev/null"
+COMPILER_PATH=/usr/lib/gcc/i686-pc-cygwin/4.9.2/:/usr/lib/gcc/i686-pc-cygwin/4.9.2/:/usr/lib/gcc/i686-pc-cygwin/:/usr/lib/gcc/i686-pc-cygwin/4.9.2/:/usr/lib/gcc/i686-pc-cygwin/:/usr/lib/gcc/i686-pc-cygwin/4.9.2/../../../../i686-pc-cygwin/bin/
+LIBRARY_PATH=/usr/lib/gcc/i686-pc-cygwin/4.9.2/:/usr/lib/gcc/i686-pc-cygwin/4.9.2/../../../../i686-pc-cygwin/lib/:/usr/lib/gcc/i686-pc-cygwin/4.9.2/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-E' '-v' '-mtune=generic' '-march=i686'
+`
+	includePaths, sysIncludePaths, err := hostCppConfig("cpp", out)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Logf("\nIncludePaths:\n%s\nSysIncludePaths:\n%s", PrettyString(includePaths), PrettyString(sysIncludePaths))
+}
