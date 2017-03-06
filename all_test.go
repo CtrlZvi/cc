@@ -3253,3 +3253,33 @@ func TestIssue90(t *testing.T) {
 		t.Errorf("expr.Expression2: %v %v", g, e)
 	}
 }
+
+// https://github.com/cznic/cc/issues/91
+func TestIssue91(t *testing.T) {
+	ast, err := Parse(
+		"", []string{"testdata/issue91.c"}, newTestModel(), EnableImplicitFuncDef(),
+	)
+	if err != nil {
+		t.Fatal(errString(err))
+	}
+
+	decl := ast.ExternalDeclaration.FunctionDefinition.FunctionBody.
+		CompoundStatement.BlockItemListOpt.BlockItemList.BlockItemList.BlockItem.Declaration.
+		InitDeclaratorListOpt.InitDeclaratorList.InitDeclarator.Declarator
+
+	typ := decl.Type
+	if g, e := typ.Kind(), Array; g != e {
+		t.Errorf("a.Type.Kind: %v, should be %v", g, e)
+	}
+	if g := typ.Elements(); g >= 0 {
+		t.Errorf("a.Type.Elements: %v, should be < 0", g)
+	}
+
+	expr := ast.ExternalDeclaration.FunctionDefinition.FunctionBody.
+		CompoundStatement.BlockItemListOpt.BlockItemList.BlockItemList.BlockItemList.BlockItem.
+		Statement.ExpressionStatement.ExpressionListOpt.ExpressionList.Expression
+
+	if g := expr.Value; g != nil {
+		t.Errorf("sizeof a: %v, should be nil", g)
+	}
+}
