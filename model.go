@@ -257,10 +257,10 @@ func (m *Model) sanityCheck() error {
 	}{
 		Ptr:               {4, 8, 4, 8},
 		UintPtr:           {4, 8, 4, 8},
-		Void:              {0, 0, 1, 1},
+		Void:              {0, 1, 1, 1},
 		Char:              {1, 1, 1, 1},
 		SChar:             {1, 1, 1, 1},
-		UChar:             {1, 1, 1, 1},
+		UChar:             {1, 1, 1, 4},
 		Short:             {2, 2, 2, 2},
 		UShort:            {2, 2, 2, 2},
 		Int:               {4, 4, 4, 4},
@@ -273,7 +273,7 @@ func (m *Model) sanityCheck() error {
 		Double:            {8, 8, 8, 8},
 		LongDouble:        {8, 16, 8, 16},
 		Bool:              {1, 1, 1, 1},
-		FloatComplex:      {8, 8, 8, 8},
+		FloatComplex:      {8, 8, 4, 8},
 		DoubleComplex:     {16, 16, 8, 16},
 		LongDoubleComplex: {16, 32, 8, 16},
 	}
@@ -326,7 +326,7 @@ func (m *Model) sanityCheck() error {
 				}
 
 				if v.StructAlign > t.maxAlign {
-					return fmt.Errorf("struct align %d too big: %s", v.Align, k)
+					return fmt.Errorf("struct align %d too big: %s", v.StructAlign, k)
 				}
 
 				if mathutil.PopCount(v.Align) != 1 {
