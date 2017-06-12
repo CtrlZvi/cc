@@ -700,6 +700,8 @@ func (n *ctype) AlignOf() int {
 			return -1 // Incomplete type
 		case 0: // StructOrUnion IdentifierOpt '{' StructDeclarationList '}'
 			return sus.alignOf
+		case 2: // StructOrUnion IdentifierOpt '{' '}'
+			return sus.alignOf
 		default:
 			panic(sus.Case)
 		}
@@ -1514,6 +1516,12 @@ func (n *ctype) Tag() int {
 			return 0
 		case 1: // StructOrUnion IDENTIFIER
 			return sus.Token.Val
+		case 2: // StructOrUnion IdentifierOpt '{' '}'
+			if o := sus.IdentifierOpt; o != nil {
+				return o.Token.Val
+			}
+
+			return 0
 		default:
 			panic(sus.Case)
 		}
